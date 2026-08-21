@@ -2,14 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SPARK Demo</title>
-</head>
-<body>
-    <h1>SPARK — Smart Plastic Automated Recognition Kit</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <video controls width="900">
-        <source src="src/plastisort_demo.mp4" type="video/mp4">
-        
-    </video>
+    <title>SPARK — Prototype Demo</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7f9;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 35px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .description {
+            max-width: 800px;
+            margin: 30px auto;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #0969da;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>♻️ SPARK</h1>
+
+        <p class="subtitle">
+            Smart Plastic Automated Recognition Kit
+        </p>
+
+        <video controls preload="metadata">
+            <source src="./src/plastisort_demo.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+
+        <p class="description">
+            SPARK is an AI-powered plastic recognition and automated sorting
+            prototype developed by postgraduate student researchers at the
+            University of Westminster.
+        </p>
+
+        <a class="back" href="https://github.com/balogunhabeeb14/SPARK">
+            ← Back to SPARK GitHub Repository
+        </a>
+
+    </div>
+
 </body>
 </html>
