@@ -6,7 +6,8 @@ SPARK is a collaborative student-as-a-researcher project developed at the School
 The project explores how **computer vision, deep learning, embedded systems, and IoT** can be combined to recognise plastic waste and support automated sorting.
 
 
-[▶️ **Watch the SPARK Prototype Demonstration**](https://balogunhabeeb14.github.io/SPARK/src/plastisort_demo.mp4)
+[![▶️ SPARK Prototype Demonstration](src/spark.jpg)](https://balogunhabeeb14.github.io/SPARK/src/plastisort_demo.mp4)
+> **▶️ Click the image above to watch the SPARK prototype demonstration.**
 
 The demonstration shows the deployed **MobileNetV3-Large** model recognising plastic waste as part of the SPARK automated sorting prototype. Plastic waste is difficult to sort automatically because different materials can look very similar, and real-world images are rarely perfect.
 
