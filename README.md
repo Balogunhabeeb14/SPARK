@@ -1,12 +1,9 @@
 # ♻️ SPARK 
 > **AI-powered plastic recognition and automated sorting**
 
-SPARK is a collaborative student-as-a-researcher project developed at the School of Computer Science and Engineering, University of Westminster, London, UK.
+SPARK is a collaborative student-as-a-researcher project developed at the School of Computer Science and Engineering, University of Westminster, London, UK. The team included a lecturer who oversees and guides the students involved in the project; two MSc Applied AI students and two PhD students in Environmental Sciences at the University of Westminster
 
 The project explores how **computer vision, deep learning, embedded systems, and IoT** can be combined to recognise plastic waste and support automated sorting.
-
-The SPARK team included a computer science lecturer who oversees, guides, and mentors the students involved in the project; two MSc Applied AI students and two PhD students in Environmental Sciences at the University of Westminster.
-
 
 
 **[▶️ Watch the SPARK prototype demonstration](YOUR_VIDEO_LINK_HERE)**
