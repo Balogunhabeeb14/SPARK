@@ -1,5 +1,5 @@
 {
-    "round": "Round_11",
+    "round": "Round_3",
     "model": "EfficientNetB3",
     "split": "70/20/10",
     "train_accuracy": 0.9683485384472166,
