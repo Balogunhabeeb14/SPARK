@@ -1,3 +1,6 @@
+# ============================================================
+# PlastiSort AI — Round 4 MobileNetV3Large Training Script
+# 
 # Purpose:
 # 1. Builds a grouped 70/20/10 train/val/test dataset split.
 # 2. Computes class weights with extra protection for PP/PS classes.
@@ -5,6 +8,7 @@
 # 4. Exports trained models (native Keras & FP16 TFLite for edge devices).
 # 5. Evaluates model across train, validation, and test splits.
 # 6. Logs parameters, metrics, and output artifacts to MLflow.
+# ============================================================
 
 # Importing all the necessary libraries
 import os
@@ -48,7 +52,7 @@ DATA_PATH = os.path.join(
 # Shared CSV manifest path to persist the 70/20/10 split across training runs
 SPLIT_MANIFEST_PATH = os.path.join(
     PROJECT_ROOT,
-    "round12_grouped_split_70_20_10.csv"
+    "round4_grouped_split_70_20_10.csv"
 )
 
 # Local MLflow tracking storage directory
@@ -64,7 +68,7 @@ print(f"Dataset Path targeted at: {DATA_PATH}")
 # HYPERPARAMETERS & SYSTEM CONFIGURATION
 # ============================================================
 
-MODEL_NAME = "MobileNetV3Large_Round12"
+MODEL_NAME = "MobileNetV3Large_Round4"
 
 # Image & batch processing configuration
 IMG_SIZE = (224, 224)   # Input resolution expected by MobileNetV3
@@ -101,7 +105,7 @@ IMAGE_EXTENSIONS = (
 # Output paths for models, metrics, and training logs
 MODEL_SAVE_PATH = os.path.join(
     BASE_DIR,
-    "plastic_model_MobileNetV3Large_round12.keras"
+    "plastic_model_MobileNetV3Large_round4.keras"
 )
 
 TFLITE_SAVE_PATH = os.path.join(
@@ -111,12 +115,12 @@ TFLITE_SAVE_PATH = os.path.join(
 
 HISTORY_PATH = os.path.join(
     BASE_DIR,
-    "training_history_MobileNetV3Large_round12.csv"
+    "training_history_MobileNetV3Large_round4.csv"
 )
 
 METRICS_PATH = os.path.join(
     BASE_DIR,
-    "evaluation_metrics_MobileNetV3Large_round12.csv"
+    "evaluation_metrics_MobileNetV3Large_round4.csv"
 )
 
 # ============================================================
@@ -165,7 +169,7 @@ mlflow.set_tracking_uri(
     Path(MLFLOW_DIR).resolve().as_uri()
 )
 
-mlflow.set_experiment("PlastiSort_Round_12_70_20_10")
+mlflow.set_experiment("PlastiSort_Round_4_70_20_10")
 
 # ============================================================
 # DATASET LOADING & GROUPING
@@ -296,7 +300,7 @@ def create_and_save_split():
                     image_dict[group]["label"]
                 ])
 
-    print("Created Round 12 shared split file:")
+    print("Created Round 4 shared split file:")
     print(SPLIT_MANIFEST_PATH)
 
 
@@ -394,7 +398,7 @@ for index, class_name in enumerate(class_names):
 # ============================================================
 
 print("\n" + "=" * 70)
-print(f"Round 12: {MODEL_NAME}")
+print(f"Round 4: {MODEL_NAME}")
 print("Dataset Summary")
 print("=" * 70)
 
@@ -554,7 +558,7 @@ model = models.Sequential([
     layers.Dense(
         len(class_names),
         activation="softmax"
-    )], name="round12_MobileNetV3Large")
+    )], name="round4_MobileNetV3Large")
 
 # Compile model with Adam optimizer and sparse categorical loss
 model.compile(
@@ -571,7 +575,7 @@ model.build(input_shape=(None, IMG_SIZE[0], IMG_SIZE[1], 3))
 # Save text summary of model architecture to disk
 MODEL_SUMMARY_PATH = os.path.join(
     BASE_DIR,
-    "model_summary_MobileNetV3Large_round12.txt"
+    "model_summary_MobileNetV3Large_round4.txt"
 )
 
 with open(MODEL_SUMMARY_PATH, "w") as file:
@@ -653,15 +657,15 @@ def evaluate_dataset(dataset, split_name, paths):
     # Output filenames for generated artifacts
     report_path = os.path.join(
         BASE_DIR,
-        f"classification_report_MobileNetV3Large_round12_{split_name}.txt"
+        f"classification_report_MobileNetV3Large_round4_{split_name}.txt"
     )
     cm_path = os.path.join(
         BASE_DIR,
-        f"confusion_matrix_MobileNetV3Large_round12_{split_name}.csv"
+        f"confusion_matrix_MobileNetV3Large_round4_{split_name}.csv"
     )
     prediction_path = os.path.join(
         BASE_DIR,
-        f"prediction_results_MobileNetV3Large_round12_{split_name}.csv"
+        f"prediction_results_MobileNetV3Large_round4_{split_name}.csv"
     )
 
     # Save classification text report
@@ -723,12 +727,12 @@ def evaluate_dataset(dataset, split_name, paths):
 # MLFLOW TRACKED EXECUTION RUN
 # ============================================================
 
-with mlflow.start_run(run_name="Round_12_MobileNetV3Large_70_20_10"):
+with mlflow.start_run(run_name="Round_4_MobileNetV3Large_70_20_10"):
 
     # Log MLflow tags
     mlflow.set_tags({
         "project": "PlastiSort AI",
-        "round": "Round 12",
+        "round": "Round 4",
         "model_name": MODEL_NAME,
         "split": "70/20/10",
         "split_type": "grouped_stratified"
@@ -835,12 +839,12 @@ with mlflow.start_run(run_name="Round_12_MobileNetV3Large_70_20_10"):
     # Save JSON evaluation summary file
     summary_json_path = os.path.join(
         BASE_DIR,
-        "round12_summary_MobileNetV3Large.json"
+        "round4_summary_MobileNetV3Large.json"
     )
 
     with open(summary_json_path, "w") as file:
         json.dump({
-            "round": "Round_12",
+            "round": "Round_4",
             "model": MODEL_NAME,
             "split": "70/20/10",
             "train_accuracy": train_metrics["accuracy"],
@@ -902,7 +906,7 @@ with mlflow.start_run(run_name="Round_12_MobileNetV3Large_70_20_10"):
 
     # Print final console execution summary
     print("\n" + "=" * 70)
-    print("Round 12 MobileNetV3Large execution has been completed successfully")
+    print("Round 4 MobileNetV3Large execution has been completed successfully")
     print("=" * 70)
     print(f"Final Train Accuracy      : {train_metrics['accuracy'] * 100:.2f}%")
     print(f"Final Validation Accuracy : {val_metrics['accuracy'] * 100:.2f}%")
