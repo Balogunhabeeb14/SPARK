@@ -1,10 +1,10 @@
 # ============================================================
-# PlastiSort AI — Round 11 ResNet50 Held-Out Test Prediction
+# PlastiSort AI — Round 3 ResNet50 Held-Out Test Prediction
 # with MLflow
 #
-# Round 11 changes from Round 10:
-# - Uses Round 11 split manifest and trained model
-# - Updated experiment, run name and output paths to Round 11
+# Round 3 changes from Round 11:
+# - Uses Round 3 split manifest and trained model
+# - Updated experiment, run name and output paths to Round 3
 # ============================================================
 
 import json
@@ -43,11 +43,11 @@ VALID_CLASSES = [
 ]
 
 # File and directory paths for loading data/models and saving outputs
-SPLIT_MANIFEST_PATH    = PROJECT_ROOT / "round11_grouped_split_70_20_10.csv"
-MODEL_PATH             = PROJECT_ROOT / "Train" / "plastic_model_ResNet50_round11.keras"
-OUTPUT_DIR             = PROJECT_ROOT / "outputs" / "round11_ResNet50_prediction_outputs"
+SPLIT_MANIFEST_PATH    = PROJECT_ROOT / "round3_grouped_split_70_20_10.csv"
+MODEL_PATH             = PROJECT_ROOT / "Train" / "plastic_model_ResNet50_round3.keras"
+OUTPUT_DIR             = PROJECT_ROOT / "outputs" / "round3_ResNet50_prediction_outputs"
 MLFLOW_TRACKING_DIR    = PROJECT_ROOT / "mlruns"
-MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_11_70_20_10"
+MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_3_70_20_10"
 
 # Ensure output directories exist before writing files
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -105,7 +105,7 @@ def save_confusion_matrix_png(cm, class_names, output_path):
     """Generates, styles, and saves a visual confusion matrix plot as a PNG file."""
     plt.figure(figsize=(9, 7))
     plt.imshow(cm)
-    plt.title("Round 11 Held-Out Test — ResNet50")
+    plt.title("Round 3 Held-Out Test — ResNet50")
     plt.xlabel("Predicted class")
     plt.ylabel("True class")
     
@@ -146,14 +146,14 @@ def main():
     if not SPLIT_MANIFEST_PATH.exists():
         raise FileNotFoundError(
             f"Split manifest not found: {SPLIT_MANIFEST_PATH}\n"
-            "Run the Round 11 training script first."
+            "Run the Round 3 training script first."
         )
 
     # Verify that the trained model file exists
     if not MODEL_PATH.exists():
         raise FileNotFoundError(
             f"Saved model not found: {MODEL_PATH}\n"
-            "Run the Round 11 ResNet50 training script first."
+            "Run the Round 3 ResNet50 training script first."
         )
 
     # Load dataset split and isolate records assigned to the 'test' group
@@ -186,12 +186,12 @@ def main():
 
     # Begin tracking the evaluation run in MLflow
     with mlflow.start_run(
-        run_name="Round_11_ResNet50_held_out_test_prediction"
+        run_name="Round_3_ResNet50_held_out_test_prediction"
     ):
         # Log metadata tags for the run
         mlflow.set_tags({
             "project": "PlastiSort AI",
-            "round": "Round 11",
+            "round": "Round 3",
             "model": MODEL_NAME,
             "task": "held_out_test_prediction",
             "split_strategy": "grouped_stratified_70_20_10",
@@ -200,7 +200,7 @@ def main():
         # Log evaluation configuration parameters
         mlflow.log_params({
             "model_name": MODEL_NAME,
-            "prediction_dataset": "Round 11 held-out test split",
+            "prediction_dataset": "Round 3 held-out test split",
             "test_images": len(test_paths),
             "batch_size": BATCH_SIZE,
             "image_size": "224x224",
@@ -209,7 +209,7 @@ def main():
         })
 
         # Run predictions across the test dataset
-        true_labels     = np.array(test_labels)
+        true_labels      = np.array(test_labels)
         probabilities   = model.predict(test_ds, verbose=0)
         predicted_labels = np.argmax(probabilities, axis=1)
         confidences     = np.max(probabilities, axis=1)
@@ -248,13 +248,13 @@ def main():
         )
 
         # Define file paths for output artifacts
-        predictions_path  = OUTPUT_DIR / "prediction_results_ResNet50_round11_test.csv"
-        report_txt_path   = OUTPUT_DIR / "classification_report_ResNet50_round11_test.txt"
-        report_csv_path   = OUTPUT_DIR / "classification_report_ResNet50_round11_test.csv"
-        cm_csv_path       = OUTPUT_DIR / "confusion_matrix_ResNet50_round11_test.csv"
-        cm_png_path       = OUTPUT_DIR / "confusion_matrix_ResNet50_round11_test.png"
-        summary_path      = OUTPUT_DIR / "prediction_summary_ResNet50_round11_test.csv"
-        metrics_json_path = OUTPUT_DIR / "prediction_metrics_ResNet50_round11_test.json"
+        predictions_path  = OUTPUT_DIR / "prediction_results_ResNet50_round3_test.csv"
+        report_txt_path   = OUTPUT_DIR / "classification_report_ResNet50_round3_test.txt"
+        report_csv_path   = OUTPUT_DIR / "classification_report_ResNet50_round3_test.csv"
+        cm_csv_path       = OUTPUT_DIR / "confusion_matrix_ResNet50_round3_test.csv"
+        cm_png_path       = OUTPUT_DIR / "confusion_matrix_ResNet50_round3_test.png"
+        summary_path      = OUTPUT_DIR / "prediction_summary_ResNet50_round3_test.csv"
+        metrics_json_path = OUTPUT_DIR / "prediction_metrics_ResNet50_round3_test.json"
 
         # Construct data structure containing granular individual predictions
         prediction_data = {
@@ -280,7 +280,7 @@ def main():
         save_confusion_matrix_png(cm, VALID_CLASSES, cm_png_path)
 
         pd.DataFrame([{
-            "round": "Round_11",
+            "round": "Round_3",
             "model": MODEL_NAME,
             "prediction_set": "held_out_test",
             "test_images": len(test_paths),
@@ -323,7 +323,7 @@ def main():
 
         # Print final console performance report summary
         print("\n" + "=" * 72)
-        print("ROUND 11 ResNet50 HELD-OUT TEST PREDICTION COMPLETED")
+        print("ROUND 3 ResNet50 HELD-OUT TEST PREDICTION COMPLETED")
         print("=" * 72)
         print(f"Test images : {len(test_paths)}")
         print(f"Accuracy    : {accuracy * 100:.2f}%")
