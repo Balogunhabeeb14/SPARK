@@ -1,5 +1,5 @@
 # ==============================================================================
-# PLASTISORT AI: EFFICIENTNETB3 TRAINING & EVALUATION SCRIPT
+# PLASTISORT AI: EFFICIENTNETB3 TRAINING & EVALUATION SCRIPT (ROUND 3)
 # ==============================================================================
 # Simple summary of what this code does:
 # 1. Finds and organizes plastic waste image files into classes.
@@ -72,7 +72,7 @@ DATA_PATH = os.path.join(
 # Path to the CSV file that locks in the dataset split so all models use identical images
 SPLIT_MANIFEST_PATH = os.path.join(
     PROJECT_ROOT,
-    "round11_grouped_split_70_20_10.csv"
+    "round3_grouped_split_70_20_10.csv"
 )
 
 # Folder where MLflow will store experiment tracking logs and run history
@@ -89,7 +89,7 @@ print(f"Dataset Path targeted at: {DATA_PATH}")
 # --- STEP 3: SET HYPERPARAMETERS & CONFIGURATIONS ---
 
 # Model backbone architecture name
-MODEL_NAME = "EfficientNetB3"
+MODEL_NAME = "EfficientNetB3_Round3"
 
 # Standard width and height to resize all input images (224x224 pixels)
 IMG_SIZE = (224, 224)
@@ -136,25 +136,25 @@ IMAGE_EXTENSIONS = (
 # File path where the final trained neural network model will be saved
 MODEL_SAVE_PATH = os.path.join(
     BASE_DIR,
-    "plastic_model_EfficientNetB3_round11.keras"
+    "plastic_model_EfficientNetB3_round3.keras"
 )
 
 # File path for saving training loss and accuracy history across epochs
 HISTORY_PATH = os.path.join(
     BASE_DIR,
-    "training_history_EfficientNetB3_round11.csv"
+    "training_history_EfficientNetB3_round3.csv"
 )
 
 # File path for saving overall model evaluation scores
 METRICS_PATH = os.path.join(
     BASE_DIR,
-    "evaluation_metrics_EfficientNetB3_round11.csv"
+    "evaluation_metrics_EfficientNetB3_round3.csv"
 )
 
 # File path for saving the visual layer structure description of the model
 MODEL_SUMMARY_PATH = os.path.join(
     BASE_DIR,
-    "model_summary_EfficientNetB3_round11.txt"
+    "model_summary_EfficientNetB3_round3.txt"
 )
 
 
@@ -206,7 +206,7 @@ mlflow.set_tracking_uri(tracking_uri)
 print(f"MLflow local tracking URI set to: {tracking_uri}")
 
 # Set the active experiment name under which all training runs are logged
-mlflow.set_experiment("PlastiSort_Round_11_70_20_10")
+mlflow.set_experiment("PlastiSort_Round_3_70_20_10")
 print("MLflow experiment initialized.")
 
 
@@ -261,7 +261,7 @@ def load_dataset(root_dir):
 
 # Run the scanning function to locate all available images
 image_dict, class_names = load_dataset(DATA_PATH)
-print(f"Scanning is complete complete. Parsed {len(image_dict)} base image groupings.")
+print(f"Scanning is complete. Parsed {len(image_dict)} base image groupings.")
 
 
 def create_and_save_split():
@@ -338,7 +338,7 @@ def create_and_save_split():
                     image_dict[group]["label"]
                 ])
 
-    print("Created Round 11 shared split file:")
+    print("Created Round 3 shared split file:")
     print(SPLIT_MANIFEST_PATH)
 
 
@@ -427,7 +427,7 @@ for index, class_name in enumerate(class_names):
 # --- STEP 7: PRINT DATASET SUMMARY TABLES ---
 
 print("\n" + "=" * 70)
-print("Round 11: EfficientNetB3")
+print("Round 3: EfficientNetB3")
 print("Dataset Summary")
 print("=" * 70)
 
@@ -558,13 +558,13 @@ print("Building the EfficientNetB3 architecture and unfreezing fine-tuning layer
 
 # Data augmentation block to randomly distort images during training to prevent overfitting
 data_augmentation = tf.keras.Sequential([
-    layers.RandomFlip("horizontal"),       # Random left-right flipping
-    layers.RandomRotation(0.3),            # Random slight rotations
-    layers.RandomZoom(0.2),                # Random zooming in/out
-    layers.RandomTranslation(0.1, 0.1),    # Random slight image shifts
-    layers.RandomBrightness(0.25),         # Random lighting adjustments
-    layers.RandomContrast(0.25),           # Random contrast adjustments
-    layers.GaussianNoise(0.03),            # Random subtle pixel noise
+    layers.RandomFlip("horizontal"),        # Random left-right flipping
+    layers.RandomRotation(0.3),             # Random slight rotations
+    layers.RandomZoom(0.2),                 # Random zooming in/out
+    layers.RandomTranslation(0.1, 0.1),     # Random slight image shifts
+    layers.RandomBrightness(0.25),          # Random lighting adjustments
+    layers.RandomContrast(0.25),            # Random contrast adjustments
+    layers.GaussianNoise(0.03),             # Random subtle pixel noise
 ], name="data_augmentation")
 
 # Load pre-trained EfficientNetB3 base model initialized with ImageNet visual weights
@@ -583,15 +583,15 @@ for layer in base_model.layers[:-UNFREEZE_LAYERS]:
 
 # Stack final network architecture
 model = models.Sequential([
-    data_augmentation,                   # Apply image variations
-    base_model,                          # Pre-trained feature extractor
-    layers.GlobalAveragePooling2D(),     # Compress 2D feature maps to 1D vector
-    layers.Dropout(0.5),                 # Randomly drop 50% nodes to stop overfitting
-    layers.Dense(                        # Output layer with 5 probabilities using Softmax
+    data_augmentation,                     # Apply image variations
+    base_model,                            # Pre-trained feature extractor
+    layers.GlobalAveragePooling2D(),       # Compress 2D feature maps to 1D vector
+    layers.Dropout(0.5),                   # Randomly drop 50% nodes to stop overfitting
+    layers.Dense(                          # Output layer with 5 probabilities using Softmax
         len(class_names),
         activation="softmax"
     )
-], name="round11_EfficientNetB3")
+], name="round3_EfficientNetB3")
 
 # Compile model specifying optimization algorithm, loss function, and tracking metric
 model.compile(
@@ -619,8 +619,8 @@ model.summary()
 # Configure Early Stopping to automatically stop training if validation accuracy stops improving
 early_stopping = tf.keras.callbacks.EarlyStopping(
     monitor="val_accuracy",
-    patience=10,             # Wait 10 epochs without improvement before stopping
-    min_delta=0.005,         # Minimum required improvement threshold
+    patience=10,               # Wait 10 epochs without improvement before stopping
+    min_delta=0.005,           # Minimum required improvement threshold
     restore_best_weights=True,  # Revert model to best performing epoch weights
     verbose=1
 )
@@ -689,15 +689,15 @@ def evaluate_dataset(dataset, split_name, paths):
     # Set destination file paths for evaluation exports
     report_path = os.path.join(
         BASE_DIR,
-        f"classification_report_EfficientNetB3_round11_{split_name}.txt"
+        f"classification_report_EfficientNetB3_round3_{split_name}.txt"
     )
     cm_path = os.path.join(
         BASE_DIR,
-        f"confusion_matrix_EfficientNetB3_round11_{split_name}.csv"
+        f"confusion_matrix_EfficientNetB3_round3_{split_name}.csv"
     )
     prediction_path = os.path.join(
         BASE_DIR,
-        f"prediction_results_EfficientNetB3_round11_{split_name}.csv"
+        f"prediction_results_EfficientNetB3_round3_{split_name}.csv"
     )
 
     # Write text report to file
@@ -765,13 +765,13 @@ def evaluate_dataset(dataset, split_name, paths):
 print("Establishing active MLflow session run", flush=True)
 # Start tracking run under MLflow
 with mlflow.start_run(
-    run_name="Round_11_EfficientNetB3_70_20_10"
+    run_name="Round_3_EfficientNetB3_70_20_10"
 ):
     print("Registering system metadata tags and hyperparameters with the MLflow dashboard")
     # Log informational metadata tags
     mlflow.set_tags({
         "project": "PlastiSort AI",
-        "round": "Round 11",
+        "round": "Round 3",
         "model_name": MODEL_NAME,
         "split": "70/20/10",
         "split_type": "grouped_stratified"
@@ -877,12 +877,12 @@ with mlflow.start_run(
     # Save summary results into JSON format
     summary_json_path = os.path.join(
         BASE_DIR,
-        "round11_summary_EfficientNetB3.json"
+        "round3_summary_EfficientNetB3.json"
     )
 
     with open(summary_json_path, "w") as file:
         json.dump({
-            "round": "Round_11",
+            "round": "Round_3",
             "model": MODEL_NAME,
             "split": "70/20/10",
             "train_accuracy": train_metrics["accuracy"],
@@ -937,23 +937,10 @@ with mlflow.start_run(
         (test_metrics["prediction_path"], "evaluation")
     ]
 
-    # Save output artifacts into MLflow run directory
     for file_path, artifact_folder in artifact_files:
         if os.path.exists(file_path):
-            mlflow.log_artifact(
-                file_path,
-                artifact_path=artifact_folder
-            )
+            mlflow.log_artifact(file_path, artifact_path=artifact_folder)
 
-    # Print final execution completion message and accuracy percentages to screen
     print("\n" + "=" * 70)
-    print("Round 11 EfficientNetB3 execution finalized successfully!")
-    print("=" * 70)
-    print(f"Final Train Accuracy      : {train_metrics['accuracy'] * 100:.2f}%")
-    print(f"Final Validation Accuracy : {val_metrics['accuracy'] * 100:.2f}%")
-    print(f"Final Test Accuracy       : {test_metrics['accuracy'] * 100:.2f}%")
-    print(f"Final Test Precision      : {test_metrics['precision'] * 100:.2f}%")
-    print(f"Final Test Recall         : {test_metrics['recall'] * 100:.2f}%")
-    print(f"Final Test F1 Score       : {test_metrics['f1'] * 100:.2f}%")
-    print("All run details have been pushed to local MLflow database workspace.")
+    print("Round 3 EfficientNetB3 execution has been completed successfully")
     print("=" * 70)
