@@ -34,11 +34,11 @@ DATA_PATH = os.path.join(
     "ai_plastic_waste_management_training_updated"
 )
 
-# Shared split file for Round 11.
+# Shared split file for Round 3.
 # EfficientNetB3 and ResNet50 must use the same file to ensure fair comparison.
 SPLIT_MANIFEST_PATH = os.path.join(
     PROJECT_ROOT,
-    "round11_grouped_split_70_20_10.csv"
+    "round3_grouped_split_70_20_10.csv"
 )
 
 # Directory where MLflow will save experiment tracking data
@@ -87,17 +87,17 @@ IMAGE_EXTENSIONS = (
 # Output paths for saving the model, history, and final metrics
 MODEL_SAVE_PATH = os.path.join(
     BASE_DIR,
-    "plastic_model_ResNet50_round11.keras"
+    "plastic_model_ResNet50_round3.keras"
 )
 
 HISTORY_PATH = os.path.join(
     BASE_DIR,
-    "training_history_ResNet50_round11.csv"
+    "training_history_ResNet50_round3.csv"
 )
 
 METRICS_PATH = os.path.join(
     BASE_DIR,
-    "evaluation_metrics_ResNet50_round11.csv"
+    "evaluation_metrics_ResNet50_round3.csv"
 )
 
 # ==========================================
@@ -144,7 +144,7 @@ mlflow.set_tracking_uri(
 
 # Group runs under a specific experiment name
 mlflow.set_experiment(
-    "PlastiSort_Round_11_70_20_10"
+    "PlastiSort_Round_3_70_20_10"
 )
 
 # ==========================================
@@ -244,7 +244,7 @@ def create_and_save_split():
             for path in image_dict[group]["paths"]:
                 writer.writerow(["test", path, image_dict[group]["label"]])
 
-    print("Created Round 11 shared split file:")
+    print("Created Round 3 shared split file:")
     print(SPLIT_MANIFEST_PATH)
 
 def load_split_from_csv():
@@ -315,7 +315,7 @@ for index, class_name in enumerate(class_names):
 
 # Print a summary of the dataset
 print("\n" + "=" * 70)
-print("ROUND 11 - RESNET50")
+print("ROUND 3 - RESNET50")
 print("Dataset Summary")
 print("=" * 70)
 
@@ -446,13 +446,13 @@ class ResNet50Preprocess(layers.Layer):
 
 # Construct the full sequential model
 model = models.Sequential([
-    data_augmentation,                                    # Apply random transformations
-    ResNet50Preprocess(name="resnet50_preprocess"),       # Preprocess inputs for ResNet
-    base_model,                                           # Feature extraction backbone
-    layers.GlobalAveragePooling2D(),                      # Flatten spatial dimensions
-    layers.Dropout(0.5),                                  # Dropout to prevent overfitting
-    layers.Dense(len(class_names), activation="softmax")  # Output layer (5 classes)
-], name="round11_ResNet50")
+    data_augmentation,                                      # Apply random transformations
+    ResNet50Preprocess(name="resnet50_preprocess"),        # Preprocess inputs for ResNet
+    base_model,                                             # Feature extraction backbone
+    layers.GlobalAveragePooling2D(),                        # Flatten spatial dimensions
+    layers.Dropout(0.5),                                    # Dropout to prevent overfitting
+    layers.Dense(len(class_names), activation="softmax")    # Output layer (5 classes)
+], name="round3_ResNet50")
 
 # Compile the model with optimizer, loss function, and metrics
 model.compile(
@@ -467,7 +467,7 @@ model.build(input_shape=(None, IMG_SIZE[0], IMG_SIZE[1], 3))
 # Save a text summary of the architecture to disk
 MODEL_SUMMARY_PATH = os.path.join(
     BASE_DIR,
-    "model_summary_ResNet50_round11.txt"
+    "model_summary_ResNet50_round3.txt"
 )
 
 with open(MODEL_SUMMARY_PATH, "w") as file:
@@ -543,15 +543,15 @@ def evaluate_dataset(dataset, split_name, paths):
     # Define paths for saving outputs
     report_path = os.path.join(
         BASE_DIR,
-        f"classification_report_ResNet50_round11_{split_name}.txt"
+        f"classification_report_ResNet50_round3_{split_name}.txt"
     )
     cm_path = os.path.join(
         BASE_DIR,
-        f"confusion_matrix_ResNet50_round11_{split_name}.csv"
+        f"confusion_matrix_ResNet50_round3_{split_name}.csv"
     )
     prediction_path = os.path.join(
         BASE_DIR,
-        f"prediction_results_ResNet50_round11_{split_name}.csv"
+        f"prediction_results_ResNet50_round3_{split_name}.csv"
     )
 
     # Save classification report to txt
@@ -615,12 +615,12 @@ def evaluate_dataset(dataset, split_name, paths):
 # TRAINING EXECUTION & MLFLOW LOGGING
 # ==========================================
 # Initialize an MLflow run to log all activities
-with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
+with mlflow.start_run(run_name="Round_3_ResNet50_70_20_10"):
 
     # Log identifying tags
     mlflow.set_tags({
         "project": "PlastiSort AI",
-        "round": "Round 11",
+        "round": "Round 3",
         "model_name": MODEL_NAME,
         "split": "70/20/10",
         "split_type": "grouped_stratified"
@@ -655,7 +655,7 @@ with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
     })
 
     print("\n" + "=" * 70)
-    print("TRAINING - ROUND 11 RESNET50")
+    print("TRAINING - ROUND 3 RESNET50")
     print("=" * 70)
 
     # Begin the training process!
@@ -713,11 +713,11 @@ with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
 
     # Save a clean JSON summary of the overall run
     summary_json_path = os.path.join(
-        BASE_DIR, "round11_summary_ResNet50.json"
+        BASE_DIR, "round3_summary_ResNet50.json"
     )
     with open(summary_json_path, "w") as file:
         json.dump({
-            "round": "Round_11",
+            "round": "Round_3",
             "model": MODEL_NAME,
             "split": "70/20/10",
             "train_accuracy": train_metrics["accuracy"],
@@ -750,20 +750,20 @@ with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
 
     # Prepare list of files to upload to MLflow's artifact storage
     artifact_files = [
-        (__file__, "source"),                                # Upload this script itself
-        (SPLIT_MANIFEST_PATH, "dataset_split"),              # Upload split configuration
-        (MODEL_SAVE_PATH, "model"),                          # Upload compiled model
-        (MODEL_SUMMARY_PATH, "model"),                       # Upload text model summary
-        (HISTORY_PATH, "training"),                          # Upload epoch training history
-        (METRICS_PATH, "results"),                           # Upload top-level metrics
-        (summary_json_path, "results"),                      # Upload json summary
-        (train_metrics["report_path"], "evaluation"),        # Upload Train evaluation docs
+        (__file__, "source"),                                     # Upload this script itself
+        (SPLIT_MANIFEST_PATH, "dataset_split"),                   # Upload split configuration
+        (MODEL_SAVE_PATH, "model"),                                # Upload compiled model
+        (MODEL_SUMMARY_PATH, "model"),                             # Upload text model summary
+        (HISTORY_PATH, "training"),                                # Upload epoch training history
+        (METRICS_PATH, "results"),                                 # Upload top-level metrics
+        (summary_json_path, "results"),                            # Upload json summary
+        (train_metrics["report_path"], "evaluation"),              # Upload Train evaluation docs
         (train_metrics["cm_path"], "evaluation"),
         (train_metrics["prediction_path"], "evaluation"),
-        (val_metrics["report_path"], "evaluation"),          # Upload Validation evaluation docs
+        (val_metrics["report_path"], "evaluation"),                # Upload Validation evaluation docs
         (val_metrics["cm_path"], "evaluation"),
         (val_metrics["prediction_path"], "evaluation"),
-        (test_metrics["report_path"], "evaluation"),         # Upload Test evaluation docs
+        (test_metrics["report_path"], "evaluation"),               # Upload Test evaluation docs
         (test_metrics["cm_path"], "evaluation"),
         (test_metrics["prediction_path"], "evaluation")
     ]
@@ -775,7 +775,7 @@ with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
 
     # Final read-out
     print("\n" + "=" * 70)
-    print("Round 11 ResNet has been completed")
+    print("Round 3 ResNet has been completed")
     print("=" * 70)
     print(f"Train Accuracy      : {train_metrics['accuracy'] * 100:.2f}%")
     print(f"Validation Accuracy : {val_metrics['accuracy'] * 100:.2f}%")
@@ -784,5 +784,5 @@ with mlflow.start_run(run_name="Round_11_ResNet50_70_20_10"):
     print(f"Test Recall         : {test_metrics['recall'] * 100:.2f}%")
     print(f"Test F1 Score       : {test_metrics['f1'] * 100:.2f}%")
     print("MLflow experiment:")
-    print("PlastiSort_Round_11_70_20_10")
+    print("PlastiSort_Round_3_70_20_10")
     print("=" * 70)
