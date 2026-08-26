@@ -6,8 +6,6 @@ SPARK is a collaborative student-as-a-researcher project developed at the School
 The project explores how **computer vision, deep learning, embedded systems, and IoT** can be combined to recognise plastic waste and support automated sorting.
 
 
-[![▶️ SPARK Prototype Demonstration](src/spark.jpg)](https://balogunhabeeb14.github.io/SPARK/src/plastisort_demo.mp4)
-> **▶️ Click the image above to watch the SPARK prototype demonstration.**
 
 The demonstration shows the deployed **MobileNetV3-Large** model recognising plastic waste as part of the SPARK automated sorting prototype. Plastic waste is difficult to sort automatically because different materials can look very similar, and real-world images are rarely perfect.
 
@@ -66,17 +64,16 @@ Using a common dataset allowed us to compare the three architectures under the s
 
 
 ---
-
 ## Experimental Evaluation
 
-The project was carried out through **three rounds of experimentation**.
+The project was carried out through multiple rounds of experimentation. The evaluation process used a combination of the main project dataset and additional real-world images collected by the team. This allowed the models to be tested under both structured dataset conditions and more realistic camera-based conditions.
 
 ### Round 1 — Model Development
 
-The first round focused on preparing the dataset and developing the three candidate models.
+The first stage focused on preparing the available plastic image datasets and developing the three candidate deep learning models.
 
 ```text
-WaDaBa Dataset
+Plastic Image Datasets
       │
       ▼
 Pre-processing
@@ -84,13 +81,9 @@ Pre-processing
       ▼
 Training
       │
-      ├───────────────┐
-      ▼               ▼
-EfficientNet-B3    ResNet-50
-      │               │
-      └───────┬───────┘
-              ▼
-       MobileNetV3-Large
+      ├───────────────┬───────────────┐
+      ▼               ▼               ▼
+EfficientNet-B3    ResNet-50    MobileNetV3-Large
 ```
 
 The purpose of this stage was to establish the initial performance of the different architectures on the plastic classification task.
