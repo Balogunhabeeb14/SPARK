@@ -1,0 +1,11 @@
+{
+    "round": "Round_3",
+    "model": "ResNet50",
+    "split": "70/20/10",
+    "train_accuracy": 0.9709551293986223,
+    "validation_accuracy": 0.9432717678100264,
+    "test_accuracy": 0.9437751004016064,
+    "test_precision": 0.9454260929317551,
+    "test_recall": 0.9437751004016064,
+    "test_f1": 0.9437884948218946
+}
