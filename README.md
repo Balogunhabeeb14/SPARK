@@ -1,4 +1,4 @@
-# ♻️ SPARK 
+## SPARK 
 > **AI-powered plastic recognition and automated sorting**
 
 SPARK is a collaborative student-as-a-researcher project developed at the School of Computer Science and Engineering, University of Westminster, London, UK. The team included a lecturer who oversees and guides the students involved in the project; two MSc Applied AI students and two PhD students in Environmental Sciences at the University of Westminster
@@ -26,9 +26,9 @@ Three convolutional neural network architectures were developed and evaluated:
 
 | Model             | Evaluated | Deployed |
 | ----------------- | :-------: | :------: |
-| EfficientNet-B3   |     ✅     |     ❌    |
-| ResNet-50         |     ✅     |     ❌    |
-| MobileNetV3-Large |     ✅     |   **✅**  |
+| EfficientNet-B3   |     Yes     |   NO   |
+| ResNet-50         |     Yes     |   NO   |
+| MobileNetV3-Large |     Yes     |   Yes  |
 
 ### EfficientNet-B3
 
