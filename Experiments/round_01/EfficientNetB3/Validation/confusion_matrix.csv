@@ -1,0 +1,6 @@
+True / Predicted,HDPE Plastic,LDPE Plastic,PET Plastic,PP Plastic,PS Plastic
+HDPE Plastic,229,0,0,0,1
+LDPE Plastic,0,210,0,3,8
+PET Plastic,3,0,240,2,0
+PP Plastic,3,6,0,140,13
+PS Plastic,0,5,0,6,92

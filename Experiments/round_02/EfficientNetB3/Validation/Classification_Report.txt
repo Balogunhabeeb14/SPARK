@@ -1,0 +1,11 @@
+              precision    recall  f1-score   support
+
+HDPE Plastic     0.9703    0.9957    0.9828       230
+LDPE Plastic     0.9491    0.9276    0.9382       221
+ PET Plastic     0.9958    0.9755    0.9856       245
+  PP Plastic     0.8938    0.8827    0.8882       162
+  PS Plastic     0.8349    0.8835    0.8585       103
+
+    accuracy                         0.9438       961
+   macro avg     0.9288    0.9330    0.9307       961
+weighted avg     0.9445    0.9438    0.9440       961
