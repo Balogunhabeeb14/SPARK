@@ -1,5 +1,5 @@
-# Round 14 MobileNetV3Large Inference & Evaluation Engine
-#Importing all the necessary libraries
+# Round 5 MobileNetV3Large Inference & Evaluation Engine
+# Importing all the necessary libraries
 import os
 import argparse
 import json
@@ -38,16 +38,16 @@ PARENT_DIR = SCRIPT_DIR.parent
 
 # List of possible places the dataset CSV file might be saved
 manifest_lookups = [
-    SCRIPT_DIR / "round14_grouped_split_70_20_10.csv",
-    PARENT_DIR / "round14_grouped_split_70_20_10.csv",
-    SCRIPT_DIR / "ai_plastic_waste_management_training_updated" / "round14_grouped_split_70_20_10.csv"
+    SCRIPT_DIR / "round5_grouped_split_70_20_10.csv",
+    PARENT_DIR / "round5_grouped_split_70_20_10.csv",
+    SCRIPT_DIR / "ai_plastic_waste_management_training_updated" / "round5_grouped_split_70_20_10.csv"
 ]
 # Find the first path in the list that actually exists
 SPLIT_MANIFEST_PATH = next((p for p in manifest_lookups if p.exists()), None)
 
 # Set up folders for saving the results
 PROJECT_ROOT = SCRIPT_DIR if SPLIT_MANIFEST_PATH is None else SPLIT_MANIFEST_PATH.parent
-OUTPUT_DIR = PROJECT_ROOT / "outputs" / "round14_MobileNetV3Large_tuning_outputs"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "round5_MobileNetV3Large_tuning_outputs"
 PREDICTION_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "predictions"
 
 # Create the prediction output folder if it doesn't already exist
@@ -111,7 +111,7 @@ class PlastiSortInferenceGenerator(tf.keras.utils.Sequence):
 # --- Helper Functions ---
 def find_best_model_checkpoint():
     """Finds the best model file (.keras) by checking the leaderboard CSV first."""
-    leaderboard_path = OUTPUT_DIR / "round14_hyperparameter_tuning_leaderboard.csv"
+    leaderboard_path = OUTPUT_DIR / "round5_hyperparameter_tuning_leaderboard.csv"
     
     # If the leaderboard exists, read it to find the best trial name
     if leaderboard_path.exists():
@@ -135,7 +135,7 @@ def run_prediction(model_path, split_target="test"):
     
     # Ensure we found the dataset CSV
     if not SPLIT_MANIFEST_PATH:
-        raise FileNotFoundError("[ERROR] Could not locate round14_grouped_split_70_20_10.csv manifest.")
+        raise FileNotFoundError("[ERROR] Could not locate round5_grouped_split_70_20_10.csv manifest.")
 
     print(f"Reading dataset split manifest from: {SPLIT_MANIFEST_PATH}", flush=True)
     split_df = pd.read_csv(SPLIT_MANIFEST_PATH)
@@ -201,7 +201,7 @@ def run_prediction(model_path, split_target="test"):
         target_df[f"prob_{class_name.replace(' ', '_')}"] = np.round(raw_probabilities[:, idx], 4)
 
     # Save the updated table to a new CSV file
-    output_csv_path = PREDICTION_OUTPUT_DIR / f"predictions_{split_target}_round14.csv"
+    output_csv_path = PREDICTION_OUTPUT_DIR / f"predictions_{split_target}_round5.csv"
     target_df.to_csv(output_csv_path, index=False)
     print(f"\nDetailed predictions saved to CSV: {output_csv_path}")
 
@@ -211,7 +211,7 @@ def run_prediction(model_path, split_target="test"):
 # --- Script Execution Point ---
 if __name__ == "__main__":
     # Setup command-line arguments so the user can pass specific settings
-    parser = argparse.ArgumentParser(description="PlastiSort Round 14 MobileNetV3Large Prediction Script")
+    parser = argparse.ArgumentParser(description="PlastiSort Round 5 MobileNetV3Large Prediction Script")
     parser.add_argument("--model_path", type=str, default=None, help="Path to a specific .keras model file")
     parser.add_argument("--split", type=str, default="test", help="Which dataset split to test (test, val, or train)")
     args = parser.parse_args()
