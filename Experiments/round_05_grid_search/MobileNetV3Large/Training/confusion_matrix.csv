@@ -1,0 +1,7 @@
+True / Predicted	HDPE Plastic	LDPE Plastic	PET Plastic	PP Plastic	PS Plastic	UNKNOWN
+HDPE Plastic	1105	0	0	0	0	0
+LDPE Plastic	0	1067	0	0	0	0
+PET Plastic	0	0	1207	0	0	0
+PP Plastic	0	0	0	1097	0	0
+PS Plastic	0	0	0	10	1002	0
+UKNOWN	7	2	1	0	1	761
