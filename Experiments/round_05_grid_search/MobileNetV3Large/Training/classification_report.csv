@@ -1,4 +1,4 @@
-              precision,        recall, f1-score,     support
+,precision,        recall, f1-score,     support
 HDPE Plastic,0.9937050359712231,1.0,0.9968425800631484,1105.0
 LDPE Plastic,0.9981290926099158,1.0,0.9990636704119851,1067.0
 PET Plastic,0.9991721854304636,1.0,0.9995859213250518,1207.0
