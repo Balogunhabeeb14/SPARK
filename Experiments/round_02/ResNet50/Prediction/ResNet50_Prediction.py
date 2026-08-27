@@ -1,4 +1,4 @@
-# Round 9 - ResNet50 Prediction 
+# Round 2 - ResNet50 Test Prediction 
 
 import json
 from pathlib import Path
@@ -43,23 +43,23 @@ VALID_CLASSES = [
 ]
 
 SPLIT_MANIFEST_PATH = (
-    PROJECT_ROOT / "round9_grouped_split_70_20_10.csv"
+    PROJECT_ROOT / "round10_grouped_split_70_20_10.csv"
 )
 
 MODEL_PATH = (
     PROJECT_ROOT
     / "Train"
-    / "plastic_model_ResNet50_round9.keras"
+    / "plastic_model_ResNet50_round10.keras"
 )
 
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
-    / "round9_ResNet50_prediction_outputs"
+    / "round10_ResNet50_prediction_outputs"
 )
 
 MLFLOW_TRACKING_DIR = PROJECT_ROOT / "mlruns"
-MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_9_70_20_10"
+MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_10_70_20_10"
 
 OUTPUT_DIR.mkdir(
     parents=True,
@@ -153,7 +153,7 @@ def save_confusion_matrix_png(
     plt.imshow(cm)
 
     plt.title(
-        "Round 9 Held-Out Test - ResNet50"
+        "Round 10 Held-Out Test — ResNet50"
     )
 
     plt.xlabel(
@@ -220,13 +220,13 @@ def main():
     if not SPLIT_MANIFEST_PATH.exists():
         raise FileNotFoundError(
             f"Split manifest not found: {SPLIT_MANIFEST_PATH}\n"
-            "Run a Round 9 training script first."
+            "Run the Round 10 training script first."
         )
 
     if not MODEL_PATH.exists():
         raise FileNotFoundError(
             f"Saved model not found: {MODEL_PATH}\n"
-            "Run the Round 9 ResNet50 training script first."
+            "Run the Round 10 ResNet50 training script first."
         )
 
     split_df = pd.read_csv(
@@ -276,11 +276,11 @@ def main():
     )
 
     with mlflow.start_run(
-        run_name="Round_9_ResNet50_held_out_test_prediction"
+        run_name="Round_10_ResNet50_held_out_test_prediction"
     ):
         mlflow.set_tags({
             "project": "PlastiSort AI",
-            "round": "Round 9",
+            "round": "Round 10",
             "model": MODEL_NAME,
             "task": "held_out_test_prediction",
             "split_strategy": "grouped_stratified_70_20_10",
@@ -288,7 +288,7 @@ def main():
 
         mlflow.log_params({
             "model_name": MODEL_NAME,
-            "prediction_dataset": "Round 9 held-out test split",
+            "prediction_dataset": "Round 10 held-out test split",
             "test_images": len(test_paths),
             "batch_size": BATCH_SIZE,
             "image_size": "224x224",
@@ -373,37 +373,37 @@ def main():
 
         predictions_path = (
             OUTPUT_DIR
-            / "prediction_results_ResNet50_round9_test.csv"
+            / "prediction_results_ResNet50_round10_test.csv"
         )
 
         report_txt_path = (
             OUTPUT_DIR
-            / "classification_report_ResNet50_round9_test.txt"
+            / "classification_report_ResNet50_round10_test.txt"
         )
 
         report_csv_path = (
             OUTPUT_DIR
-            / "classification_report_ResNet50_round9_test.csv"
+            / "classification_report_ResNet50_round10_test.csv"
         )
 
         cm_csv_path = (
             OUTPUT_DIR
-            / "confusion_matrix_ResNet50_round9_test.csv"
+            / "confusion_matrix_ResNet50_round10_test.csv"
         )
 
         cm_png_path = (
             OUTPUT_DIR
-            / "confusion_matrix_ResNet50_round9_test.png"
+            / "confusion_matrix_ResNet50_round10_test.png"
         )
 
         summary_path = (
             OUTPUT_DIR
-            / "prediction_summary_ResNet50_round9_test.csv"
+            / "prediction_summary_ResNet50_round10_test.csv"
         )
 
         metrics_json_path = (
             OUTPUT_DIR
-            / "prediction_metrics_ResNet50_round9_test.json"
+            / "prediction_metrics_ResNet50_round10_test.json"
         )
 
         prediction_data = {
@@ -460,7 +460,7 @@ def main():
         )
 
         pd.DataFrame([{
-            "round": "Round_9",
+            "round": "Round_10",
             "model": MODEL_NAME,
             "prediction_set": "held_out_test",
             "test_images": len(test_paths),
@@ -548,10 +548,12 @@ def main():
             )
 
         print("\n" + "=" * 72)
+
         print(
-            "ROUND 9 ResNet50 HELD-OUT TEST "
+            "ROUND 10 ResNet50 HELD-OUT TEST "
             "PREDICTION COMPLETED"
         )
+
         print("=" * 72)
 
         print(

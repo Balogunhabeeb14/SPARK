@@ -1,4 +1,4 @@
-# Round 9 - ResNet50 Prediction 
+# Round 9 - EfficientNetB3 Prediction 
 
 import json
 from pathlib import Path
@@ -12,8 +12,6 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-from tensorflow.keras import layers
-
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -26,7 +24,7 @@ from sklearn.metrics import (
 
 # Configuration
 
-MODEL_NAME = "ResNet50"
+MODEL_NAME = "EfficientNetB3"
 
 PREDICT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PREDICT_DIR.parent
@@ -49,13 +47,13 @@ SPLIT_MANIFEST_PATH = (
 MODEL_PATH = (
     PROJECT_ROOT
     / "Train"
-    / "plastic_model_ResNet50_round9.keras"
+    / "plastic_model_EfficientNetB3_round9.keras"
 )
 
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
-    / "round9_ResNet50_prediction_outputs"
+    / "round9_EfficientNetB3_prediction_outputs"
 )
 
 MLFLOW_TRACKING_DIR = PROJECT_ROOT / "mlruns"
@@ -78,18 +76,6 @@ mlflow.set_tracking_uri(
 mlflow.set_experiment(
     MLFLOW_EXPERIMENT_NAME
 )
-
-
-# Custom layer required to load the ResNet50 model
-
-@tf.keras.utils.register_keras_serializable(
-    package="PlastiSort"
-)
-class ResNet50Preprocess(layers.Layer):
-    def call(self, inputs):
-        return tf.keras.applications.resnet50.preprocess_input(
-            inputs
-        )
 
 
 # Image processing
@@ -123,16 +109,16 @@ def process_image(path, label):
 
 
 def create_dataset(paths, labels):
-    ds = tf.data.Dataset.from_tensor_slices(
+    dataset = tf.data.Dataset.from_tensor_slices(
         (paths, labels)
     )
 
-    ds = ds.map(
+    dataset = dataset.map(
         process_image,
         num_parallel_calls=tf.data.AUTOTUNE,
     )
 
-    return ds.batch(
+    return dataset.batch(
         BATCH_SIZE
     ).prefetch(
         tf.data.AUTOTUNE
@@ -153,7 +139,7 @@ def save_confusion_matrix_png(
     plt.imshow(cm)
 
     plt.title(
-        "Round 9 Held-Out Test - ResNet50"
+        "Round 9 Held-Out Test — EfficientNetB3"
     )
 
     plt.xlabel(
@@ -165,8 +151,8 @@ def save_confusion_matrix_png(
     )
 
     short_names = [
-        n.replace(" Plastic", "")
-        for n in class_names
+        name.replace(" Plastic", "")
+        for name in class_names
     ]
 
     plt.xticks(
@@ -183,12 +169,12 @@ def save_confusion_matrix_png(
 
     plt.colorbar()
 
-    for r in range(len(class_names)):
-        for c in range(len(class_names)):
+    for row_index in range(len(class_names)):
+        for column_index in range(len(class_names)):
             plt.text(
-                c,
-                r,
-                str(cm[r, c]),
+                column_index,
+                row_index,
+                str(cm[row_index, column_index]),
                 ha="center",
                 va="center",
             )
@@ -226,7 +212,7 @@ def main():
     if not MODEL_PATH.exists():
         raise FileNotFoundError(
             f"Saved model not found: {MODEL_PATH}\n"
-            "Run the Round 9 ResNet50 training script first."
+            "Run the Round 9 EfficientNetB3 training script first."
         )
 
     split_df = pd.read_csv(
@@ -242,15 +228,16 @@ def main():
             "No held-out test records found in the split manifest."
         )
 
-    missing = [
+    missing_paths = [
         p
         for p in test_df["path"].tolist()
         if not Path(p).exists()
     ]
 
-    if missing:
+    if missing_paths:
         raise FileNotFoundError(
-            f"Missing test image: {missing[0]}"
+            f"A held-out test image is missing: "
+            f"{missing_paths[0]}"
         )
 
     test_paths = test_df[
@@ -269,14 +256,11 @@ def main():
     )
 
     model = tf.keras.models.load_model(
-        MODEL_PATH,
-        custom_objects={
-            "ResNet50Preprocess": ResNet50Preprocess
-        },
+        MODEL_PATH
     )
 
     with mlflow.start_run(
-        run_name="Round_9_ResNet50_held_out_test_prediction"
+        run_name="Round_9_EfficientNetB3_held_out_test_prediction"
     ):
         mlflow.set_tags({
             "project": "PlastiSort AI",
@@ -373,37 +357,37 @@ def main():
 
         predictions_path = (
             OUTPUT_DIR
-            / "prediction_results_ResNet50_round9_test.csv"
+            / "prediction_results_EfficientNetB3_round9_test.csv"
         )
 
         report_txt_path = (
             OUTPUT_DIR
-            / "classification_report_ResNet50_round9_test.txt"
+            / "classification_report_EfficientNetB3_round9_test.txt"
         )
 
         report_csv_path = (
             OUTPUT_DIR
-            / "classification_report_ResNet50_round9_test.csv"
+            / "classification_report_EfficientNetB3_round9_test.csv"
         )
 
         cm_csv_path = (
             OUTPUT_DIR
-            / "confusion_matrix_ResNet50_round9_test.csv"
+            / "confusion_matrix_EfficientNetB3_round9_test.csv"
         )
 
         cm_png_path = (
             OUTPUT_DIR
-            / "confusion_matrix_ResNet50_round9_test.png"
+            / "confusion_matrix_EfficientNetB3_round9_test.png"
         )
 
         summary_path = (
             OUTPUT_DIR
-            / "prediction_summary_ResNet50_round9_test.csv"
+            / "prediction_summary_EfficientNetB3_round9_test.csv"
         )
 
         metrics_json_path = (
             OUTPUT_DIR
-            / "prediction_metrics_ResNet50_round9_test.json"
+            / "prediction_metrics_EfficientNetB3_round9_test.json"
         )
 
         prediction_data = {
@@ -421,12 +405,12 @@ def main():
             "confidence": confidences,
         }
 
-        for i, cls in enumerate(
+        for index, class_name in enumerate(
             VALID_CLASSES
         ):
             prediction_data[
-                f"probability_{cls.replace(' ', '_')}"
-            ] = probabilities[:, i]
+                f"probability_{class_name.replace(' ', '_')}"
+            ] = probabilities[:, index]
 
         pd.DataFrame(
             prediction_data
@@ -500,7 +484,7 @@ def main():
                 float(f1),
         })
 
-        for path, folder in [
+        for path, artifact_folder in [
             (
                 Path(__file__),
                 "source",
@@ -544,12 +528,12 @@ def main():
         ]:
             log_artifact(
                 path,
-                folder,
+                artifact_folder,
             )
 
         print("\n" + "=" * 72)
         print(
-            "ROUND 9 ResNet50 HELD-OUT TEST "
+            "ROUND 9 EfficientNetB3 HELD-OUT TEST "
             "PREDICTION COMPLETED"
         )
         print("=" * 72)
