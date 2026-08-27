@@ -1,5 +1,5 @@
 {
-    "round": "Round_10",
+    "round": "Round_2",
     "model": "ResNet50",
     "split": "70/20/10",
     "train_accuracy": 0.9662162162162162,
