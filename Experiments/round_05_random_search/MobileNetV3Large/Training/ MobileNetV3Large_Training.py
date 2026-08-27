@@ -27,7 +27,7 @@ from sklearn.metrics import (
 )
 
 
-# Stability settings for Mac
+
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
