@@ -1,0 +1,9 @@
+{
+    "trial": "Trial_38_RMSPROP_LR_0.001_DO_0.2_UF_10",
+    "split_name": "train",
+    "total_samples": 6250,
+    "accuracy": 0.99824,
+    "weighted_precision": 0.9982479410218439,
+    "weighted_recall": 0.99824,
+    "weighted_f1_score": 0.9982356765782647
+}
