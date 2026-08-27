@@ -1,4 +1,4 @@
-# Round 14 - 72 Combination Hyperparameter Tuning (MobileNetV3Large)
+# Round 5 - 72 Combination Hyperparameter Tuning (MobileNetV3Large)
 import os
 
 # 1. Force CPU mode to bypass corrupted Apple Metal graphics driver loops
@@ -21,7 +21,7 @@ from sklearn.utils.class_weight import compute_class_weight
 print("System libraries and neural network components loaded successfully", flush=True)
 
 # Basic settings for the project
-MODEL_NAME    = "MobileNetV3Large_Round14_Hyperparameter_Tuning"
+MODEL_NAME    = "MobileNetV3Large_Round5_Hyperparameter_Tuning"
 BATCH_SIZE    = 64
 IMG_SIZE      = (224, 224)
 VALID_CLASSES = ["HDPE Plastic", "LDPE Plastic", "PET Plastic", "PP Plastic", "PS Plastic", "Unknown"]
@@ -49,17 +49,17 @@ PREDICT_DIR   = Path(__file__).resolve().parent
 DOWNLOADS_DIR = PREDICT_DIR.parent
 
 manifest_lookups = [
-    PREDICT_DIR / "round14_grouped_split_70_20_10.csv",
-    DOWNLOADS_DIR / "round14_grouped_split_70_20_10.csv",
-    PREDICT_DIR / "ai_plastic_waste_management_training_updated" / "round14_grouped_split_70_20_10.csv"
+    PREDICT_DIR / "round5_grouped_split_70_20_10.csv",
+    DOWNLOADS_DIR / "round5_grouped_split_70_20_10.csv",
+    PREDICT_DIR / "ai_plastic_waste_management_training_updated" / "round5_grouped_split_70_20_10.csv"
 ]
 SPLIT_MANIFEST_PATH = next((p for p in manifest_lookups if p.exists()), None)
 
 # Setting up where to save output files and MLflow logs
 PROJECT_ROOT = PREDICT_DIR if SPLIT_MANIFEST_PATH is None else SPLIT_MANIFEST_PATH.parent
-OUTPUT_DIR   = PROJECT_ROOT / "outputs" / "round14_MobileNetV3Large_tuning_outputs"
+OUTPUT_DIR    = PROJECT_ROOT / "outputs" / "round5_MobileNetV3Large_tuning_outputs"
 MLFLOW_TRACKING_DIR    = PROJECT_ROOT / "mlruns"
-MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_14_Hyperparameter_Tuning"
+MLFLOW_EXPERIMENT_NAME = "PlastiSort_Round_5_Hyperparameter_Tuning"
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 MLFLOW_TRACKING_DIR.mkdir(parents=True, exist_ok=True)
@@ -172,7 +172,7 @@ def build_tunable_model(dropout_rate, learning_rate, optimizer_name, unfreeze_la
 def main():
     if not SPLIT_MANIFEST_PATH:
         print("[ERROR] Missing dataset manifest path configuration", flush=True)
-        raise FileNotFoundError("Cannot locate the Round 14 split manifest CSV file.")
+        raise FileNotFoundError("Cannot locate the Round 5 split manifest CSV file.")
 
     print(f"Targeted Split Manifest: {SPLIT_MANIFEST_PATH}", flush=True)
     print("Reading the dataset manifest file into memory", flush=True)
@@ -200,12 +200,12 @@ def main():
 
     print(f"Starting parent MLflow Grid Search Run (Total Combinations: {total_trials})", flush=True)
     
-    with mlflow.start_run(run_name="Round_14_MobileNetV3Large_Grid_Search"):
+    with mlflow.start_run(run_name="Round_5_MobileNetV3Large_Grid_Search"):
         mlflow.set_tags({
             "Project": "PlastiSort_AI",
-            "Round": "Round_14",
+            "Round": "Round_5",
             "Architecture": "MobileNetV3Large",
-            "Task": "hyperparameter_tuning_grid_search_round_14"
+            "Task": "hyperparameter_tuning_grid_search_round_5"
         })
 
         # 4-Level Nested Loop: Optimizers x Learning Rates x Dropout Rates x Unfreeze Layers
@@ -303,14 +303,14 @@ def main():
         print("Generating comprehensive hyperparameter tuning leaderboard", flush=True)
         leaderboard_df = pd.DataFrame(leaderboard).sort_values(by="val_accuracy", ascending=False)
         
-        leaderboard_path = OUTPUT_DIR / "round14_hyperparameter_tuning_leaderboard.csv"
+        leaderboard_path = OUTPUT_DIR / "round5_hyperparameter_tuning_leaderboard.csv"
         leaderboard_df.to_csv(leaderboard_path, index=False)
         mlflow.log_artifact(str(leaderboard_path), artifact_path="summary")
 
         best_trial = leaderboard_df.iloc[0]
 
         print("\n" + "=" * 80)
-        print("Round 14 Hyperparameter Tuning Complete (72 Trials)")
+        print("Round 5 Hyperparameter Tuning Complete (72 Trials)")
         print("=" * 80)
         print(leaderboard_df[["trial", "learning_rate", "dropout_rate", "unfreeze_layers", "train_accuracy", "val_accuracy", "test_accuracy", "val_f1_score"]].to_string(index=False))
         print("=" * 80)
