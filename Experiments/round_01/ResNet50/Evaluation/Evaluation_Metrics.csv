@@ -1,0 +1,12 @@
+metric,value
+train_accuracy,0.9765
+validation_accuracy,0.9448
+test_accuracy,0.9382
+test_precision_weighted,0.9425
+test_recall_weighted,0.9382
+test_f1_weighted,0.9380
+test_f1_HDPE_Plastic,0.9694
+test_f1_LDPE_Plastic,0.9320
+test_f1_PET_Plastic,0.9835
+test_f1_PP_Plastic,0.8966
+test_f1_PS_Plastic,0.8276
