@@ -1,0 +1,9 @@
+{
+    "trial": "Trial_38_RMSPROP_LR_0.001_DO_0.2_UF_10",
+    "split_name": "test",
+    "total_samples": 894,
+    "accuracy": 0.9753914988814317,
+    "weighted_precision": 0.9762120691684516,
+    "weighted_recall": 0.9753914988814317,
+    "weighted_f1_score": 0.9751948527945973
+}

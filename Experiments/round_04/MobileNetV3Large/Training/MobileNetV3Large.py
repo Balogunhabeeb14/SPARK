@@ -1,5 +1,5 @@
 # ============================================================
-# PlastiSort AI — Round 4 MobileNetV3Large Training Script
+# PlastiSort AI — Round 4 MobileNetV3Large Training 
 # 
 # Purpose:
 # 1. Builds a grouped 70/20/10 train/val/test dataset split.
