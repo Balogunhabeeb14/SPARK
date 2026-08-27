@@ -1,0 +1,10 @@
+{
+    "round": "Round_3",
+    "model": "EfficientNetB3",
+    "split": "70/20/10",
+    "train_accuracy": 0.9683485384472166,
+    "validation_accuracy": 0.9393139841688655,
+    "test_accuracy": 0.9410977242302544,
+    "test_precision": 0.9427085011135162,
+    "test_recall": 0.9410977242302544,
+    "test_f1": 0.9411615167294266
