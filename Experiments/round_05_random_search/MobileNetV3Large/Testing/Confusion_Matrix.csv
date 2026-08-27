@@ -1,0 +1,7 @@
+,HDPE Plastic,LDPE Plastic,PET Plastic,PP Plastic,PS Plastic,UNKNOWN
+HDPE Plastic,145,0,0,2,1,0
+LDPE Plastic,0,150,0,1,1,0
+PET Plastic,2,0,165,1,0,4
+PP Plastic,0,0,0,156,1,1
+PS Plastic,0,0,0,0,147,0
+UNKNOWN,0,0,1,0,0,109
