@@ -1,4 +1,4 @@
-              precision    recall  f1-score   support
+precision    recall  f1-score   support
 
 HDPE Plastic     0.9807    0.9744    0.9776       313
 LDPE Plastic     0.8922    0.9403    0.9156       352
