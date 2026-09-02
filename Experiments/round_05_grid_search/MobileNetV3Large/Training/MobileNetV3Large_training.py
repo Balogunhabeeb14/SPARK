@@ -27,6 +27,15 @@ IMG_SIZE      = (224, 224)
 VALID_CLASSES = ["HDPE Plastic", "LDPE Plastic", "PET Plastic", "PP Plastic", "PS Plastic", "Unknown"]
 NUM_CLASSES   = len(VALID_CLASSES)
 TUNING_EPOCHS = 5  # Number of training loops per trial
+# Reproducibility
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+
+
+set_seed(SEED)
 
 # Class weights for 6 classes (including Unknown at index 5)
 CLASS_WEIGHTS = {
