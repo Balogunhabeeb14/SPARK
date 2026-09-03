@@ -70,30 +70,11 @@ ZONE_LABELS = {
     "yolo": "YOLO CROP ZONE",
 }
 
-# Inference settings that are fixed rather than user-adjustable.
-#
-# PREPROCESS_MODE  The saved model contains a Rescaling layer
-#                  (scale 1/127.5, offset -1.0), so it expects raw 0-255 RGB
-#                  and performs the normalisation internally.
-# TTA_MODE         "none" classifies one upright view. "mirror" also
-#                  classifies a horizontally flipped copy and averages the
-#                  two, at roughly double the inference cost.
-# UNDO_CLASS_WEIGHTS
-#                  Training applied a 1.3x class-weight boost to PP and PS,
-#                  which causes those classes to be over-predicted at
-#                  inference time. When enabled, predicted probabilities are
-#                  divided by the training weights and renormalised.
-# BLANK_FRAME_GUARD
-#                  Reports NO OBJECT when the crop is almost entirely black,
-#                  so an empty scene is not assigned a plastic class. Only
-#                  has an effect when background suppression is active.
+
 PREPROCESS_MODE = "raw255"
 TTA_MODE = "none"
 UNDO_CLASS_WEIGHTS = True
 BLANK_FRAME_GUARD = True
-
-# Per-class training image counts, in CLASS_NAMES order. Used to reconstruct
-# the class weights that sklearn's compute_class_weight produced.
 TRAIN_CLASS_COUNTS = [1118, 1037, 1206, 1099, 997, 772]
 PP_PS_WEIGHT_BOOST = 1.3
 
@@ -112,17 +93,12 @@ DEFAULT_YOLO_EVERY_N = 5
 YOLO_IMAGE_SIZE = 416
 YOLO_DEVICE = os.environ.get("PLASTISORT_DEVICE", "cpu")
 
-# Detections of these classes are discarded. Large fixed furniture only;
-# classes such as "vase" and "cell phone" are deliberately absent because
-# YOLO frequently assigns them to plastic containers and flat plastic items.
 IGNORED_YOLO_CLASS_NAMES = {
     "person", "chair", "couch", "bed", "dining table", "toilet",
     "bench", "tv", "refrigerator", "oven", "sink",
 }
 
-# When non-empty, only these YOLO classes are considered. Note that plastic
-# film, bags and foam are not represented in the COCO label set, so an
-# allowlist can make LDPE and PS undetectable.
+
 YOLO_ALLOWED_CLASS_NAMES: set[str] = set()
 
 MIN_DETECTION_AREA_RATIO = 0.002
@@ -135,9 +111,7 @@ ROI_RESIZE_STEP = 0.025
 MIN_ROI_SIZE = 0.15
 
 
-# --------------------------------------------------------------------------
 # Page setup
-# --------------------------------------------------------------------------
 
 st.set_page_config(page_title="PlastiSort", layout="wide")
 
@@ -168,9 +142,7 @@ st.caption(
 )
 
 
-# --------------------------------------------------------------------------
 # Model loading
-# --------------------------------------------------------------------------
 
 @st.cache_resource(show_spinner="Loading the six-class classifier...")
 def load_plastic_model(model_path: str):
@@ -231,9 +203,7 @@ def build_training_class_weights() -> np.ndarray:
 TRAINING_CLASS_WEIGHTS = build_training_class_weights()
 
 
-# --------------------------------------------------------------------------
 # Region of interest state
-# --------------------------------------------------------------------------
 
 for state_name, default_value in zip(
     ("roi_left", "roi_top", "roi_right", "roi_bottom"), DEFAULT_ROI
@@ -292,9 +262,8 @@ def reset_roi_state() -> None:
     set_roi_state(*DEFAULT_ROI)
 
 
-# --------------------------------------------------------------------------
+
 # Sidebar
-# --------------------------------------------------------------------------
 
 with st.sidebar:
     st.header("Settings")
@@ -410,9 +379,7 @@ if not roi_is_valid:
     )
 
 
-# --------------------------------------------------------------------------
 # Video processor
-# --------------------------------------------------------------------------
 
 class PlasticVideoProcessor(VideoProcessorBase):
     """
@@ -482,8 +449,7 @@ class PlasticVideoProcessor(VideoProcessorBase):
             self.yolo_every_n = max(1, int(yolo_every_value))
             self.roi_fractions = tuple(roi_values)
 
-            # The video thread owns the deque, so request a rebuild rather
-            # than replacing the object from another thread.
+
             if int(temporal_value) != self.temporal_frames:
                 self.temporal_frames = int(temporal_value)
                 self.pending_history_maxlen = max(1, self.temporal_frames)
@@ -516,7 +482,6 @@ class PlasticVideoProcessor(VideoProcessorBase):
             self.pending_history_reset = False
             self.pending_history_maxlen = None
 
-    # -- geometry ----------------------------------------------------------
 
     @staticmethod
     def roi_bounds_for(frame: np.ndarray, fractions: tuple) -> tuple:
