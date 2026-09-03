@@ -1,9 +1,5 @@
 """
-PlastiSort - live plastic type recognition.
 
-A Streamlit application that classifies plastic waste into six categories from
-a webcam stream, using a fine-tuned MobileNetV3Large classifier with optional
-YOLOv8n object detection.
 
 Three input modes are available at runtime:
 
@@ -11,12 +7,7 @@ Three input modes are available at runtime:
     roi_with_yolo  Classify the region of interest and draw a detection box.
     yolo           Classify only the detected object crop.
 
-Run with:
 
-    streamlit run app.py
-
-The classifier weights are located via the PLASTISORT_MODEL environment
-variable, falling back to models/plastic_model.keras relative to this file.
 """
 
 from __future__ import annotations
